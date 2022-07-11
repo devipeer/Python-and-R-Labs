@@ -1,0 +1,45 @@
+---
+title: "Task2"
+author: "Piotr Pawełko"
+output: html_document
+date: '2022-04-12'
+---
+
+```{r cache=FALSE, warning=FALSE}
+load("C:/Users/piotr/OneDrive/Pulpit/R lab 3/postop.RData")
+summary(postop[,-9])
+```
+```{r cache=FALSE, warning=FALSE}
+library(ggplot2)
+library(RColorBrewer)
+g <- ggplot(postop, aes(x =SURF.STBL, y = COMFORT,fill=SURF.STBL))+
+  geom_violin()+
+  scale_fill_brewer(palette = "Dark2")+
+  theme_bw()+
+  labs(title="Violin plot")
+plot(g)
+```
+
+```{r cache=FALSE, warning=FALSE}
+library(knitr)
+patients <- matrix(nrow = 3, ncol = 3)
+rownames(patients) <- c("Decision A", "Division S", "Division I")
+colnames(patients) <- c("CORE.STBL stable", "CORE.STBL mod-stable", "CORE.STBL unstable")
+patients[1, 1] <- sum(postop$decision == "A" & postop$CORE.STBL == "stable", na.rm = TRUE)
+patients[1, 2] <- sum(postop$decision == "A" & postop$CORE.STBL == "mod-stable", na.rm = TRUE)
+patients[1, 3] <- sum(postop$decision == "A" & postop$CORE.STBL == "unstable", na.rm = TRUE)
+patients[2, 1] <- sum(postop$decision == "S" & postop$CORE.STBL == "stable", na.rm = TRUE)
+patients[2, 2] <- sum(postop$decision == "S" & postop$CORE.STBL == "mod-stable", na.rm = TRUE)
+patients[2, 3] <- sum(postop$decision == "S" & postop$CORE.STBL == "unstable", na.rm = TRUE)
+patients[3, 1] <- sum(postop$decision == "I" & postop$CORE.STBL == "stable", na.rm = TRUE)
+patients[3, 2] <- sum(postop$decision == "I" & postop$CORE.STBL == "mod-stable", na.rm = TRUE)
+patients[3, 3] <- sum(postop$decision == "I" & postop$CORE.STBL == "unstable", na.rm = TRUE)
+patients <- as.table(patients)
+kable(patients)
+```
+
+```{r cache=FALSE, warning=FALSE}
+comfort <- aggregate(postop$COMFORT, list(postop$L.CORE), mean)
+colnames(comfort) <- c("L.CORE", "Comfort")
+kable(comfort)
+```
